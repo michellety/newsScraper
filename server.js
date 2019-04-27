@@ -11,6 +11,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
+//dynamic port
 var PORT = process.env.PORT || 3000;
 
 // Initialize Express
@@ -33,19 +34,15 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+// If deployed, use the deployed database. Otherwise use the local meetUpScrape database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/meetUpScrape";
 
 mongoose.connect(MONGODB_URI);
 
-
-// Connect to the Mongo DB
-// mongoose.connect("mongodb://localhost/meetUpScrape", { useNewUrlParser: true });
-
 // Routes
 
 // A GET route for scraping the meetup.com events website
-app.get("/scrape", function (req, res) {
+app.get("/", function (req, res) {
     // First, we grab the body of the html with axios
     axios.get("https://www.meetup.com/find/events/").then(function (response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -55,7 +52,6 @@ app.get("/scrape", function (req, res) {
         $("div.text--labelSecondary").each(function (i, element) {
             // Save an empty result object
             var result = {};
-
             // Add the text and href of every link, and save them as properties of the result object
             result.title = $(this)
                 .children("a")
@@ -66,7 +62,6 @@ app.get("/scrape", function (req, res) {
                 .attr("href");
             result.details = $(this)
                 .find("span").text();
-
             // Create a new Article using the `result` object built from scraping
             db.Article.create(result)
                 .then(function (dbArticle) {
@@ -80,14 +75,8 @@ app.get("/scrape", function (req, res) {
         });
 
         // Send a message to the client
-        res.send("Scrape Complete");
-    });
-});
-
-// main route for getting all scraped Articles from the db
-app.get("/", function (req, res) {
-    // Grab every document in the Articles collection
-    db.Article.find({})
+        // res.send("Scrape Complete");
+        db.Article.find({})
         .then(function (dbArticle) {
             // If we were able to successfully find Articles, send them back to the client
             // res.json(dbArticle);
@@ -99,7 +88,26 @@ app.get("/", function (req, res) {
                 res.json(err);
             });
         });
+    });
+
 });
+
+// main route for getting all scraped Articles from the db
+// app.get("/", function (req, res) {
+//     // Grab every document in the Articles collection
+//     db.Article.find({})
+//         .then(function (dbArticle) {
+//             // If we were able to successfully find Articles, send them back to the client
+//             // res.json(dbArticle);
+//             // render on the home.handlebars page
+//             res.render("home", {
+//                 articles: dbArticle
+//             }).catch(function (err) {
+//                 // If an error occurred, send it to the client
+//                 res.json(err);
+//             });
+//         });
+// });
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function (req, res) {
