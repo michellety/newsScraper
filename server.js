@@ -34,7 +34,7 @@ app.set("view engine", "handlebars");
 
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/meetUpScrape";
 
 mongoose.connect(MONGODB_URI);
 
@@ -84,13 +84,14 @@ app.get("/scrape", function (req, res) {
     });
 });
 
-// Route for getting all scraped Articles from the db
+// main route for getting all scraped Articles from the db
 app.get("/", function (req, res) {
     // Grab every document in the Articles collection
     db.Article.find({})
         .then(function (dbArticle) {
             // If we were able to successfully find Articles, send them back to the client
             // res.json(dbArticle);
+            // render on the home.handlebars page
             res.render("home", {
                 articles: dbArticle
             }).catch(function (err) {
