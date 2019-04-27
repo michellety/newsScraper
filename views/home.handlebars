@@ -1,0 +1,20 @@
+<h1>Home page</h1>
+<a href="/saved"><button>View Saved</button></a>
+
+<div>
+    <button id="scrapeBtn">Scrape and see local meetups</button>
+</div>
+
+<div>
+    <button id="saveBtn">Save Meetups</button>
+</div>
+
+<div id="articles">
+    {{!-- render the articles object here --}}
+    {{#each articles}}
+    <h3 id="title">{{ this.title}} </h3>
+    <h5>{{ this.details }}</h5>
+    <a href="{{ this.link }}">{{ this.link }}</a>
+    <button>Save</button>
+    {{/each}}
+</div>
