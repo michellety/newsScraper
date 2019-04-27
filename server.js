@@ -40,7 +40,7 @@ mongoose.connect(MONGODB_URI);
 
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/meetUpScrape", { useNewUrlParser: true });
+// mongoose.connect("mongodb://localhost/meetUpScrape", { useNewUrlParser: true });
 
 // Routes
 
