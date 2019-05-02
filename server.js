@@ -40,9 +40,24 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/meetUpScrape";
 mongoose.connect(MONGODB_URI);
 
 // Routes
+//
+app.get("/", function(req, res) {
+    db.Article.find({})
+        .populate("notes")
+        
+        .then(function(dbArticles) {
+            var hbsObject = {
+                articles: dbArticles
+            }
+            res.render("home", hbsObject);
+        })
+        .catch(function(err) {
+            res.json(err);
+        })
+});
 
 // A GET route for scraping the meetup.com events website
-app.get("/", function (req, res) {
+app.get("/scrape", function (req, res) {
     // First, we grab the body of the html with axios
     axios.get("https://www.meetup.com/find/events/").then(function (response) {
         // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -109,6 +124,9 @@ app.get("/", function (req, res) {
 //         });
 // });
 
+
+
+
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function (req, res) {
     // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
@@ -137,7 +155,8 @@ app.post("/articles/:id", function (req, res) {
         })
         .then(function (dbArticle) {
             // If we were able to successfully update an Article, send it back to the client
-            res.json(dbArticle);
+            // res.json(dbArticle);
+            res.redirect("/")
         })
         .catch(function (err) {
             // If an error occurred, send it to the client

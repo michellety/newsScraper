@@ -1,21 +1,25 @@
-<h1>Home page</h1>
+<div class="jumbotron">Upcoming Meetups in the Sacramento Area</div>
 <a href="/saved"><button>View Saved</button></a>
 
-<div>
-    {{!-- <button id="scrapeBtn">Scrape and see local meetups</button> --}}
-    <a href="/scrape"><button>Scrape</button></a>
-</div>
+<div class="container">
+    <div>
+        {{!-- <button id="scrapeBtn">Scrape and see local meetups</button> --}}
+        <a href="/scrape"><button class="button">Scrape</button></a>
+    </div>
 
-<div>
-    <button id="saveBtn">Save Meetups</button>
-</div>
+    <div>
+        <button id="saveBtn" class="button">Save Meetups</button>
+    </div>
 
-<div id="articles">
-    {{!-- render the articles object here --}}
-    {{#each articles}}
-    <h3 id="title">{{ this.title}} </h3>
-    <h5>{{ this.details }}</h5>
-    <a href="{{ this.link }}">{{ this.link }}</a>
-    <button data-id="{{_id}}">Save</button>
-    {{/each}}
+    <div id="articles">
+        {{!-- render the articles object here --}}
+        {{#each articles}}
+        <div class="article">
+        <h3 id="title">{{ this.title}} </h3>
+        <h5>{{ this.details }}</h5>
+        <a href="{{ this.link }}">{{ this.link }}</a>
+        <button class="button" data-id="{{_id}}">Save</button>
+        </div>
+        {{/each}}
+    </div>
 </div>
